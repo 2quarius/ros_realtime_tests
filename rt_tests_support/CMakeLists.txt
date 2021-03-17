@@ -1,13 +1,24 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(rt_tests_support)
 
-find_package(catkin REQUIRED COMPONENTS roscpp)
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
 
-catkin_package(DEPENDS roscpp
-	       INCLUDE_DIRS include
-               LIBRARIES ${PROJECT_NAME})
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+   set(CMAKE_CXX_STANDARD 14)
+endif()
 
-include_directories(${catkin_INCLUDE_DIRS} ./include)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+
+include_directories(./include)
 
 add_library(${PROJECT_NAME} STATIC
    ../rt_tests_support/src/Logger.cpp
@@ -17,7 +28,9 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 install(TARGETS ${PROJECT_NAME}
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+   ARCHIVE DESTINATION lib/${PROJECT_NAME}
+   LIBRARY DESTINATION lib/${PROJECT_NAME}
+   RUNTIME DESTINATION bin/${PROJECT_NAME}
 )
+
+ament_package()
