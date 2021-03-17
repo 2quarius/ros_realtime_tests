@@ -11,7 +11,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-#include "communication_tests/msg/timestamp_msg.hpp"
+#include "communication_tests/msg/timestamp.hpp"
 
 class Publisher {
 public:

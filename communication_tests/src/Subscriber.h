@@ -12,7 +12,7 @@
 #include "Config.h"
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-#include <communication_tests/msg/timestamp_msg.hpp>
+#include <communication_tests/msg/timestamp.hpp>
 #include <rt_tests_support/MeasurementDataEvaluator.h>
 
 class Subscriber{

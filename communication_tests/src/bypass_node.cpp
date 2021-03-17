@@ -1,4 +1,4 @@
-#include <communication_tests/timestamp_msg.h>
+#include <communication_tests/msg/timestamp.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 int main(int argc, char* argv[])
