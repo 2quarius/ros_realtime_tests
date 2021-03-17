@@ -9,8 +9,9 @@
 #ifndef PUBLISHER_H_
 #define PUBLISHER_H_
 
-#include "ros/ros.h"
+#include <rclcpp/rclcpp.hpp>
 #include <string>
+#include "communication_tests/msg/timestamp_msg.hpp"
 
 class Publisher {
 public:
@@ -19,8 +20,8 @@ public:
 	~Publisher();
 private:
 	Publisher();
-	ros::NodeHandle* nodeHandle;
-	ros::Publisher rosPublisher;
+	rclcpp::Node::SharedPtr nodeHandle;
+	rclcpp::Publisher<communication_tests::msg::timestamp_msg>::SharedPtr rosPublisher;
 };
 
 #endif //PUBLISHER_H_

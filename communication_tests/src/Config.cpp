@@ -7,7 +7,6 @@
 **/
 
 #include "Config.h"
-#include "ros/ros.h"
 #include <sstream>
 #include <sys/utsname.h>
 #include <rt_tests_support/Logger.h>

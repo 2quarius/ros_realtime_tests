@@ -7,7 +7,6 @@
 **/
 
 #include "Config.h"
-#include "ros/ros.h"
 #include "Subscriber.h"
 #include "ArgumentParser.h"
 #include <rt_tests_support/Logger.h>
@@ -31,8 +30,8 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 	}
-	ros::init(argc, argv, "communication_tests_subscriber");
-	config->nodeHandle = new ros::NodeHandle();
+	rclcpp::init(argc, argv);
+	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_subscriber");
 	Subscriber subscriber(config->topic);
 	subscriber.startMeasurement();
 	subscriber.printMeasurementResults();

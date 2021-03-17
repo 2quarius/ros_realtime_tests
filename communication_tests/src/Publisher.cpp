@@ -13,7 +13,7 @@
 
 Publisher::Publisher(const std::string& topic) :
 	nodeHandle(Config::getConfig()->nodeHandle),
-	rosPublisher(nodeHandle->advertise<communication_tests::timestamp_msg>(topic, 1000))
+	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::timestamp_msg>(topic, 1000))
 {
 }
 
@@ -22,7 +22,7 @@ void Publisher::publish()
 	Config* config = Config::getConfig();
 	ros::Rate publishFrequency(config->pubFrequency);
 	int sequenceNumber = 0;
-	communication_tests::timestamp_msg message;
+	communication_tests::msg::timestamp_msg message;
 	message.payload.clear();
 	for(int i = 0; i < config->payloadLength; i++)
 	{
@@ -36,7 +36,7 @@ void Publisher::publish()
 		clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 		message.sec = ts.tv_sec;
 		message.nsec = ts.tv_nsec;
-		rosPublisher.publish(message);
+		rosPublisher->publish(message);
 		publishFrequency.sleep();
 	}
 }

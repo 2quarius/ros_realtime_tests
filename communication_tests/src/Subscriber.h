@@ -10,9 +10,9 @@
 #define SUBSCRIBER_H_
 
 #include "Config.h"
-#include "ros/ros.h"
+#include <rclcpp/rclcpp.hpp>
 #include <string>
-#include <communication_tests/timestamp_msg.h>
+#include <communication_tests/msg/timestamp_msg.hpp>
 #include <rt_tests_support/MeasurementDataEvaluator.h>
 
 class Subscriber{
@@ -31,10 +31,10 @@ private:
 	int outOfOrderCounter;
 	const int amountMessages;
 	const static int messageMissing = -1;
-	ros::Subscriber rosSubscriber;
+	rclcpp::Subscription<communication_tests::msg::timestamp_msg>::SharedPtr rosSubscriber;
 	MeasurementDataEvaluator* measurementData;
 	std::string getMeasurementSummary();
-	void messageCallback(const communication_tests::timestamp_msg::ConstPtr& msg);
+	void messageCallback(const communication_tests::msg::timestamp_msg::ConstPtr& msg);
 };
 
 #endif //SUBSCRIBER_H_

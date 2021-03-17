@@ -1,14 +1,35 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(communication_tests)
 
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation rt_tests_support)
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
 
-add_message_files(FILES timestamp_msg.msg)
-generate_messages(DEPENDENCIES std_msgs)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+   set(CMAKE_CXX_STANDARD 14)
+endif()
 
-catkin_package(CATKIN_DEPENDS roscpp std_msgs message_runtime rt_tests_support)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-include_directories(${catkin_INCLUDE_DIRS} ../rt_tests_support/include)
+# find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation rt_tests_support)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(rt_tests_support REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+	msg/timestamp_msg.msg
+	DEPENDENCIES std_msgs
+)
+
+# catkin_package(CATKIN_DEPENDS roscpp std_msgs message_runtime rt_tests_support)
+
+include_directories(../rt_tests_support/include)
 
 add_executable(communication_tests_publisher
    ./src/Config.cpp
@@ -16,8 +37,11 @@ add_executable(communication_tests_publisher
    ./src/ArgumentParser.cpp
    ./src/ct_publisher_node.cpp
 )
-add_dependencies(communication_tests_publisher ${PROJECT_NAME}_gencpp)
-target_link_libraries(communication_tests_publisher ${catkin_LIBRARIES})
+rosidl_target_interfaces(communication_tests_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
+ament_target_dependencies(communication_tests_publisher
+	rclcpp
+	rt_tests_support
+)
 
 add_executable(communication_tests_subscriber
    ./src/Config.cpp
@@ -25,21 +49,29 @@ add_executable(communication_tests_subscriber
    ./src/ArgumentParser.cpp
    ./src/ct_subscriber_node.cpp
 )
-add_dependencies(communication_tests_subscriber ${PROJECT_NAME}_gencpp)
-target_link_libraries(communication_tests_subscriber ${catkin_LIBRARIES})
+rosidl_target_interfaces(communication_tests_subscriber ${PROJECT_NAME} rosidl_typesupport_cpp)
+ament_target_dependencies(communication_tests_publisher
+	rclcpp
+	rt_tests_support
+)
 
 add_executable(bypass_node
    ./src/bypass_node.cpp
 )
-add_dependencies(bypass_node ${PROJECT_NAME}_gencpp)
-target_link_libraries(bypass_node ${catkin_LIBRARIES})
+rosidl_target_interfaces(bypass_node ${PROJECT_NAME} rosidl_typesupport_cpp)
+ament_target_dependencies(bypass_node
+	rclcpp
+	rt_tests_support
+)
 
 install(DIRECTORY launch
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+   DESTINATION share/${PROJECT_NAME}
 )
 
 install(TARGETS communication_tests_publisher communication_tests_subscriber bypass_node
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+   ARCHIVE DESTINATION lib/${PROJECT_NAME}
+   LIBRARY DESTINATION lib/${PROJECT_NAME}
+   RUNTIME DESTINATION bin/${PROJECT_NAME}
 )
+
+ament_package()

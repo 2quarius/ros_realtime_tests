@@ -16,7 +16,7 @@
 Subscriber::Subscriber(const std::string& topic) :
 	config(Config::getConfig()),
 	lastSeq(messageMissing), outOfOrderCounter(0), amountMessages(config->amountMessages),
-	rosSubscriber(config->nodeHandle->subscribe(topic, 1000, &Subscriber::messageCallback, this)),
+	rosSubscriber(config->nodeHandle->create_subscription<communication_tests::msg::timestamp_msg>(topic, 1000, &Subscriber::messageCallback, this)),
 	measurementData(new MeasurementDataEvaluator(config->amountMessages))
 {
 }
@@ -29,7 +29,7 @@ void Subscriber::startMeasurement()
 		measurementData->getData()[i] = messageMissing;
 	}
 	outOfOrderCounter = 0;
-	ros::spin();
+	rclcpp::spin(config->nodeHandle);
 	measurementData->analyzeData();
 }
 
@@ -123,7 +123,7 @@ void Subscriber::messageCallback(const communication_tests::timestamp_msg::Const
 	lastSeq = msg->seq;
 	if(msg->last_msg)
 	{
-		ros::shutdown();
+		rclcpp::shutdown();
 	}
 }
 

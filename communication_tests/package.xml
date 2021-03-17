@@ -1,23 +1,21 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>communication_tests</name>
   <version>0.1.1</version>
   <description>Tests on the realtime capabilities of the ROS publish/subscribe communication mechanism</description>
-
-  <maintainer email="jonas.sticha@bmw-carit.de">Jonas Sticha</maintainer>
+  <maintainer email="sixplus@sjtu.edu.cn">Sixplus</maintainer>
   <license>BSD</license>
-  <author email="jonas.sticha@bmw-carit.de">Jonas Sticha</author>
+  <author email="sixplus@sjtu.edu.cn">Sixplus</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>message_generation</build_depend>
-  <build_depend>rt_tests_support</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>rt_tests_support</run_depend>
-  <run_depend>std_msgs</run_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <build_depend>rosidl_default_generators</build_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>rt_tests_support</depend>
 
   <export>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

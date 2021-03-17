@@ -7,7 +7,6 @@
 **/
 
 #include "Config.h"
-#include "ros/ros.h"
 #include "Publisher.h"
 #include "ArgumentParser.h"
 #include <rt_tests_support/Logger.h>
@@ -31,12 +30,12 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 	}
-	ros::init(argc, argv, "communication_tests_publisher");
-	config->nodeHandle = new ros::NodeHandle();
+	rclcpp::init(argc, argv);
+	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_publisher");
 	Publisher publisher(config->topic);
 	sleep(config->startDelay);
 	publisher.publish();
-	ros::shutdown();
+	rclcpp::shutdown();
 	Logger::INFO("Done publishing...");
 	return 0;
 }

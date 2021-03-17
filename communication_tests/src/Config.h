@@ -9,8 +9,8 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#include "ros/ros.h"
 #include <string>
+#include <rclcpp/rclcpp.hpp>
 #include <rt_tests_support/PrioritySwitcher.h>
 
 class Config {
@@ -18,7 +18,7 @@ public:
 	static Config* getConfig();
 	std::string getFilename();
 	std::string getTitle();
-	ros::NodeHandle* nodeHandle;
+	rclcpp::Node::SharedPtr nodeHandle;
 	bool rtPrio;
 	bool fifoScheduling;
 	int startDelay;
