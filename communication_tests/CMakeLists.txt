@@ -22,7 +22,7 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(rt_tests_support REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-	msg/timestamp.msg
+	msg/TimeStamp.msg
 	DEPENDENCIES std_msgs
 )
 

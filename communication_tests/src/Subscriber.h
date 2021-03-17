@@ -12,7 +12,7 @@
 #include "Config.h"
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-#include <communication_tests/msg/timestamp.hpp>
+#include <communication_tests/msg/time_stamp.hpp>
 #include <rt_tests_support/MeasurementDataEvaluator.h>
 
 class Subscriber{
@@ -31,10 +31,10 @@ private:
 	int outOfOrderCounter;
 	const int amountMessages;
 	const static int messageMissing = -1;
-	rclcpp::Subscription<communication_tests::msg::timestamp_msg>::SharedPtr rosSubscriber;
+	rclcpp::Subscription<communication_tests::msg::TimeStamp>::SharedPtr rosSubscriber;
 	MeasurementDataEvaluator* measurementData;
 	std::string getMeasurementSummary();
-	void messageCallback(const communication_tests::msg::timestamp_msg::ConstPtr& msg);
+	void messageCallback(const communication_tests::msg::TimeStamp::ConstPtr& msg);
 };
 
 #endif //SUBSCRIBER_H_

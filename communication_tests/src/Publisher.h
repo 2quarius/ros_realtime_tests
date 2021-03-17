@@ -11,7 +11,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-#include "communication_tests/msg/timestamp.hpp"
+#include "communication_tests/msg/time_stamp.hpp"
 
 class Publisher {
 public:
@@ -21,7 +21,7 @@ public:
 private:
 	Publisher();
 	rclcpp::Node::SharedPtr nodeHandle;
-	rclcpp::Publisher<communication_tests::msg::timestamp_msg>::SharedPtr rosPublisher;
+	rclcpp::Publisher<communication_tests::msg::TimeStamp>::SharedPtr rosPublisher;
 };
 
 #endif //PUBLISHER_H_

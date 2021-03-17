@@ -9,20 +9,19 @@
 #include "Config.h"
 #include "Publisher.h"
 #include <rt_tests_support/Logger.h>
-#include <communication_tests/timestamp_msg.h>
 
 Publisher::Publisher(const std::string& topic) :
 	nodeHandle(Config::getConfig()->nodeHandle),
-	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::timestamp_msg>(topic, 1000))
+	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::TimeStamp>(topic, 1000))
 {
 }
 
 void Publisher::publish()
 {
 	Config* config = Config::getConfig();
-	ros::Rate publishFrequency(config->pubFrequency);
+	rclcpp::Rate publishFrequency(config->pubFrequency);
 	int sequenceNumber = 0;
-	communication_tests::msg::timestamp_msg message;
+	communication_tests::msg::TimeStamp message;
 	message.payload.clear();
 	for(int i = 0; i < config->payloadLength; i++)
 	{
