@@ -12,6 +12,7 @@
 #include <rt_tests_support/PlotDataFileCreator.h>
 
 #define NANO_TO_MICRO_DIVISOR 1000
+using std::placeholders::_1;
 
 Subscriber::Subscriber(const std::string& topic) :
 	config(Config::getConfig()),

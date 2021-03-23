@@ -20,17 +20,23 @@ find_package(rclcpp REQUIRED)
 
 include_directories(./include)
 
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME}_lib STATIC
    ../rt_tests_support/src/Logger.cpp
    ../rt_tests_support/src/PrioritySwitcher.cpp
    ../rt_tests_support/src/PlotDataFileCreator.cpp
    ../rt_tests_support/src/MeasurementDataEvaluator.cpp
 )
 
-install(TARGETS ${PROJECT_NAME}
-   ARCHIVE DESTINATION lib/${PROJECT_NAME}
-   LIBRARY DESTINATION lib/${PROJECT_NAME}
-   RUNTIME DESTINATION bin/${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}_lib
+   ARCHIVE DESTINATION lib
+   LIBRARY DESTINATION lib
+   RUNTIME DESTINATION bin
 )
 
+install(DIRECTORY include/${PROJECT_NAME}
+   DESTINATION install
+)
+
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME}_lib)
 ament_package()

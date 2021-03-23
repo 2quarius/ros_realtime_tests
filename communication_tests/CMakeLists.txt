@@ -49,7 +49,7 @@ add_executable(communication_tests_subscriber
    ./src/ct_subscriber_node.cpp
 )
 rosidl_target_interfaces(communication_tests_subscriber ${PROJECT_NAME} rosidl_typesupport_cpp)
-ament_target_dependencies(communication_tests_publisher
+ament_target_dependencies(communication_tests_subscriber
 	rclcpp
 	rt_tests_support
 )
