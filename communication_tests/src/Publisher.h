@@ -21,6 +21,9 @@ public:
 private:
 	Publisher();
 	rclcpp::Node::SharedPtr nodeHandle;
+	communication_tests::msg::TimeStamp message;
+	int sequenceNumber = 0;
+	rclcpp::TimerBase::SharedPtr timer;
 	rclcpp::Publisher<communication_tests::msg::TimeStamp>::SharedPtr rosPublisher;
 };
 

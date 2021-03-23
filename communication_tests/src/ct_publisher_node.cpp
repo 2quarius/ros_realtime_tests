@@ -36,8 +36,7 @@ int main(int argc, char* argv[])
 	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_publisher");
 	Publisher publisher(config->topic);
 	std::this_thread::sleep_for(std::chrono::seconds(config->startDelay));
-	publisher.publish();
-	rclcpp::shutdown();
+	rclcpp::spin(config->nodeHandle);
 	Logger::INFO("Done publishing...");
 	return 0;
 }

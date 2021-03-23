@@ -17,29 +17,32 @@ Publisher::Publisher(const std::string& topic) :
 	nodeHandle(Config::getConfig()->nodeHandle),
 	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::TimeStamp>(topic, 1000))
 {
-}
-
-void Publisher::publish()
-{
 	Config* config = Config::getConfig();
-	communication_tests::msg::TimeStamp message;
 	message.payload.clear();
 	for(int i = 0; i < config->payloadLength; i++)
 	{
 		message.payload.push_back(0xFF);
 	}
-	auto duration = 1000ms / config->pubFrequency;
-	for(int i = 0; i < config->amountMessages; i++)
-	{
-		message.seq = i;
-		message.last_msg = (i == (config->amountMessages-1));
-		struct timespec ts;
-		clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-		message.sec = ts.tv_sec;
-		message.nsec = ts.tv_nsec;
-		rosPublisher->publish(message);
-		std::this_thread::sleep_for(duration);
-	}
+	timer = nodeHandle->create_wall_timer(1000ms / config->pubFrequency, 
+		[&](){
+			message.seq = sequenceNumber;
+			message.last_msg = (sequenceNumber == (config->amountMessages-1));
+			struct timespec ts;
+			clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+			message.sec = ts.tv_sec;
+			message.nsec = ts.tv_nsec;
+			rosPublisher->publish(message);			
+			sequenceNumber++;
+			RCLCPP_INFO(nodeHandle->get_logger(), 'pubed %d th msg', sequenceNumber);
+			if(sequenceNumber == config->amountMessages) {
+				timer->cancel();
+				rclcpp::shutdown();
+			}
+		})
+}
+
+void Publisher::publish()
+{
 }
 
 Publisher::~Publisher()
