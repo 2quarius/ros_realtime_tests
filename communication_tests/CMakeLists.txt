@@ -68,9 +68,7 @@ install(DIRECTORY launch
 )
 
 install(TARGETS communication_tests_publisher communication_tests_subscriber bypass_node
-   ARCHIVE DESTINATION lib/${PROJECT_NAME}
-   LIBRARY DESTINATION lib/${PROJECT_NAME}
-   RUNTIME DESTINATION bin/${PROJECT_NAME}
+   DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
