@@ -9,6 +9,9 @@
 #include "Config.h"
 #include "Publisher.h"
 #include <rt_tests_support/Logger.h>
+#include <chrono>
+
+using namespace std::chrono_literals;
 
 Publisher::Publisher(const std::string& topic) :
 	nodeHandle(Config::getConfig()->nodeHandle),
@@ -19,14 +22,13 @@ Publisher::Publisher(const std::string& topic) :
 void Publisher::publish()
 {
 	Config* config = Config::getConfig();
-	rclcpp::Rate publishFrequency(config->pubFrequency);
-	int sequenceNumber = 0;
 	communication_tests::msg::TimeStamp message;
 	message.payload.clear();
 	for(int i = 0; i < config->payloadLength; i++)
 	{
 		message.payload.push_back(0xFF);
 	}
+	auto duration = 1000ms / config->pubFrequency;
 	for(int i = 0; i < config->amountMessages; i++)
 	{
 		message.seq = i;
@@ -36,7 +38,7 @@ void Publisher::publish()
 		message.sec = ts.tv_sec;
 		message.nsec = ts.tv_nsec;
 		rosPublisher->publish(message);
-		publishFrequency.sleep();
+		std::this_thread::sleep_for(duration);
 	}
 }
 

@@ -1,21 +1,21 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch_ros import actions.Node
+from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             's',
-            default_value=0
+            default_value='0'
         ),
         DeclareLaunchArgument(
             'r',
-            default_value=1000
+            default_value='1000'
         ),
         DeclareLaunchArgument(
             'f',
-            default_value=1000
+            default_value='1000'
         ),
         DeclareLaunchArgument(
             'p',
@@ -23,11 +23,11 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'd',
-            default_value=1
+            default_value='1'
         ),
         DeclareLaunchArgument(
             'l',
-            default_value=0
+            default_value='0'
         ),
         DeclareLaunchArgument(
             'pt',
