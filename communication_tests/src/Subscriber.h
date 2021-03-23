@@ -34,7 +34,7 @@ private:
 	rclcpp::Subscription<communication_tests::msg::TimeStamp>::SharedPtr rosSubscriber;
 	MeasurementDataEvaluator* measurementData;
 	std::string getMeasurementSummary();
-	void messageCallback(const communication_tests::msg::TimeStamp::ConstPtr& msg);
+	void messageCallback(const communication_tests::msg::TimeStamp::SharedPtr msg);
 };
 
 #endif //SUBSCRIBER_H_

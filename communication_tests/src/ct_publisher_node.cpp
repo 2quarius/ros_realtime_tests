@@ -11,6 +11,8 @@
 #include "ArgumentParser.h"
 #include <rt_tests_support/Logger.h>
 #include <rt_tests_support/PrioritySwitcher.h>
+#include <thread>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -33,7 +35,7 @@ int main(int argc, char* argv[])
 	rclcpp::init(argc, argv);
 	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_publisher");
 	Publisher publisher(config->topic);
-	sleep(config->startDelay);
+	std::this_thread::sleep_for(std::chrono::seconds(config->startDelay));
 	publisher.publish();
 	rclcpp::shutdown();
 	Logger::INFO("Done publishing...");

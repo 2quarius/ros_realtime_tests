@@ -16,7 +16,7 @@
 Subscriber::Subscriber(const std::string& topic) :
 	config(Config::getConfig()),
 	lastSeq(messageMissing), outOfOrderCounter(0), amountMessages(config->amountMessages),
-	rosSubscriber(config->nodeHandle->create_subscription<communication_tests::msg::TimeStamp>(topic, 1000, &Subscriber::messageCallback, this)),
+	rosSubscriber(config->nodeHandle->create_subscription<communication_tests::msg::TimeStamp>(topic, 1000, std::bind(&Subscriber::messageCallback, this, _1))),
 	measurementData(new MeasurementDataEvaluator(config->amountMessages))
 {
 }
@@ -111,7 +111,7 @@ int Subscriber::getAmountMessagesOutOfOrder()
 	return outOfOrderCounter;
 }
 
-void Subscriber::messageCallback(const communication_tests::TimeStamp::ConstPtr& msg)
+void Subscriber::messageCallback(const communication_tests::msg::TimeStamp::SharedPtr msg)
 {
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
