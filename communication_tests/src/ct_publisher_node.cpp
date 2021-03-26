@@ -16,6 +16,7 @@
 
 int main(int argc, char* argv[])
 {
+	rclcpp::init(argc, argv);
 	Config* config = Config::getConfig();
 	ArgumentParser argParser;
 	if(!argParser.parseArgs(argc, argv))
@@ -32,9 +33,9 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 	}
-	rclcpp::init(argc, argv);
 	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_publisher");
 	Publisher publisher(config->topic);
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "%d", config->amountMessages);
 	std::this_thread::sleep_for(std::chrono::seconds(config->startDelay));
 	rclcpp::spin(config->nodeHandle);
 	Logger::INFO("Done publishing...");

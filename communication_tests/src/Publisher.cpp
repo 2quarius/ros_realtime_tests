@@ -23,22 +23,23 @@ Publisher::Publisher(const std::string& topic) :
 	{
 		message.payload.push_back(0xFF);
 	}
+	msgAmount = config->amountMessages;
 	timer = nodeHandle->create_wall_timer(1000ms / config->pubFrequency, 
 		[&](){
 			message.seq = sequenceNumber;
-			message.last_msg = (sequenceNumber == (config->amountMessages-1));
+			message.last_msg = (sequenceNumber == (msgAmount-1));
 			struct timespec ts;
 			clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 			message.sec = ts.tv_sec;
 			message.nsec = ts.tv_nsec;
 			rosPublisher->publish(message);			
 			sequenceNumber++;
-			RCLCPP_INFO(nodeHandle->get_logger(), 'pubed %d th msg', sequenceNumber);
-			if(sequenceNumber == config->amountMessages) {
+			//RCLCPP_INFO(nodeHandle->get_logger(), "seq : %d, total : %d", sequenceNumber, msgAmount);
+			if(sequenceNumber == msgAmount) {
 				timer->cancel();
 				rclcpp::shutdown();
 			}
-		})
+		});
 }
 
 void Publisher::publish()
