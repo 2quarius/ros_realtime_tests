@@ -7,38 +7,27 @@
 **/
 
 #include "Config.h"
-#include "Subscriber.h"
-#include "ArgumentParser.h"
 #include <rt_tests_support/Logger.h>
-#include <rt_tests_support/PrioritySwitcher.h>
 
 int main(int argc, char* argv[])
 {
 	Config* config = Config::getConfig();
-	ArgumentParser argParser;
-	if(!argParser.parseArgs(argc, argv))
-	{
-		argParser.printUsage();
+	if(!parse_argument(argc, argv, config)) {
 		return 1;
 	}
-	if(config->rtPrio)
-	{
-		PrioritySwitcher prioSwitcher(config->fifoScheduling);
-		if(prioSwitcher.switchToRealtimePriority() != 0)
-		{
-			Logger::ERROR("Switching to realtime priority failed, maybe not running as root?");
-			return 1;
-		}
-	}
 	rclcpp::init(argc, argv);
-	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_subscriber");
-	RCLCPP_INFO(config->nodeHandle->get_logger(), "init subscriber");
-	Subscriber subscriber(config->topic);
-	RCLCPP_INFO(config->nodeHandle->get_logger(), "start spin");
-	rclcpp::spin(config->nodeHandle);
-	RCLCPP_INFO(config->nodeHandle->get_logger(), "start measure");
-        subscriber.startMeasurement();
-        subscriber.printMeasurementResults();
-        subscriber.saveGnuplotData();
+	auto n = rclcpp::Node::make_shared("communication_tests_subscriber");
+	n->create_subscription<communication_tests::msg::TimeStamp>(config->topic, 1000,
+		[&](const communication_tests::msg::TimeStamp::SharedPtr msg){
+			RCLCPP_INFO(n->get_logger(), "received %d th msg", msg->seq);
+		});
+	// RCLCPP_INFO(config->nodeHandle->get_logger(), "init subscriber");
+	// Subscriber subscriber(config->topic);
+	// RCLCPP_INFO(config->nodeHandle->get_logger(), "start spin");
+	// rclcpp::spin(config->nodeHandle);
+	// RCLCPP_INFO(config->nodeHandle->get_logger(), "start measure");
+	// subscriber.startMeasurement();
+	// subscriber.printMeasurementResults();
+	// subscriber.saveGnuplotData();
 	return 0;
 }

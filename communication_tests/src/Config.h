@@ -16,22 +16,19 @@
 class Config {
 public:
 	static Config* getConfig();
-	std::string getFilename();
-	std::string getTitle();
-	rclcpp::Node::SharedPtr nodeHandle;
-	bool rtPrio;
-	bool fifoScheduling;
-	int startDelay;
-	int pubFrequency;
-	int payloadLength;
-	int amountMessages;
-	std::string namePrefix;
+	int delay;
+	int freq;
+	size_t payload;
+	int rep;
+	std::string prefix;
 	std::string topic;
 private:
-	Config();
+	Config() {};
 	~Config();
 	Config(const Config&);
 	static Config* configInstance;
 };
+
+bool parse_argument(int argc, char** argv, Config* config)
 
 #endif //CONFIG_H_

@@ -20,6 +20,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(rt_tests_support REQUIRED)
+find_package(Boost REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
 	msg/TimeStamp.msg
@@ -29,11 +30,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 # catkin_package(CATKIN_DEPENDS roscpp std_msgs message_runtime rt_tests_support)
 
 include_directories(../rt_tests_support/include)
+include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(communication_tests_publisher
    ./src/Config.cpp
-   ./src/Publisher.cpp
-   ./src/ArgumentParser.cpp
    ./src/ct_publisher_node.cpp
 )
 rosidl_target_interfaces(communication_tests_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
@@ -41,11 +41,10 @@ ament_target_dependencies(communication_tests_publisher
 	rclcpp
 	rt_tests_support
 )
+target_link_libraries(communication_tests_publisher ${Boost_LIBRARIES})
 
 add_executable(communication_tests_subscriber
    ./src/Config.cpp
-   ./src/Subscriber.cpp
-   ./src/ArgumentParser.cpp
    ./src/ct_subscriber_node.cpp
 )
 rosidl_target_interfaces(communication_tests_subscriber ${PROJECT_NAME} rosidl_typesupport_cpp)
@@ -53,6 +52,7 @@ ament_target_dependencies(communication_tests_subscriber
 	rclcpp
 	rt_tests_support
 )
+target_link_libraries(communication_tests_subscriber ${Boost_LIBRARIES})
 
 add_executable(bypass_node
    ./src/bypass_node.cpp

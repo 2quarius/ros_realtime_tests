@@ -7,62 +7,11 @@
 **/
 
 #include "Config.h"
-#include <sstream>
-#include <sys/utsname.h>
-#include <rt_tests_support/Logger.h>
+#include <string>
+#include <boost/program_options.hpp>
+#include <iostream>
 
 Config* Config::configInstance = 0;
-
-Config::Config() :
-	nodeHandle(0), rtPrio(false), fifoScheduling(false),
-	startDelay(0), pubFrequency(0), payloadLength(0),
-	amountMessages(0), namePrefix(""), topic("communication_test")
-{
-}
-
-std::string Config::getTitle()
-{
-	struct utsname unameResponse;
-	int rc = uname(&unameResponse);
-	std::stringstream machineName;
-	if(rc == 0)
-	{
-		machineName << unameResponse.nodename << " " << unameResponse.sysname << " " << unameResponse.release;
-	}
-	std::stringstream ss;
-	ss << "communication_tests plot " << machineName.str() << " -  " << amountMessages << " samples; ";
-	ss << "payload length " << payloadLength;
-	if(rtPrio)
-	{
-		ss << "; test node RT ";
-		if(fifoScheduling)
-		{
-			ss << "FIFO";
-		} else {
-			ss << "RR";
-		}
-	}
-	return ss.str();
-}
-
-std::string Config::getFilename()
-{
-	std::stringstream filename;
-	filename << namePrefix;
-	filename << "ct_gnuplot_l" << amountMessages << "_fq" << pubFrequency;
-	filename << "_pl" << payloadLength;
-	if(rtPrio)
-	{
-		filename << "-tnRT";
-		if(fifoScheduling)
-		{
-			filename << "FIFO";
-		} else {
-			filename << "RR";
-		}
-	}
-	return filename.str();
-}
 
 Config* Config::getConfig()
 {
@@ -71,4 +20,31 @@ Config* Config::getConfig()
 		configInstance = new Config();
 	}
 	return configInstance;
+}
+
+namespace po = boost::program_options;
+
+bool parse_argument(int argc, char** argv, Config* config)
+{
+	po::options_description description("Usage");
+	description.add_options()
+		("help,h", "produce help message")
+		("schedule,s", po::value<std::string>(&config->schedule)->default_value("0"), "scheduling policy")
+		("repitition,r", po::value<int>(&config->rep)->default_value(1000), "repitition of message")
+		("frequency,f", po::value<int>(&config->freq)->default_value(1000), "publish rate")
+		("payload,l", po::value<size_t>(&config->payload)->defalut_value(0), "payload of messaage")
+		("prefix,p", po::value<std::string>(&config->prefix)->default_value(""), "prefix name of log file")
+		("delay,d", po::value<int>(&config->delay)->default_value(1), "time in second to delay before publish")
+		("topic,t", po::value<std::string>(&config->topic)->default_value("communication_test"), "topic to publish message into")
+	;
+
+	po::variables_map vm;
+	po::store(po::parse_command_line(argc, argv, description), vm);
+	po::notify(vm);
+
+	if(vm.count("help")) {
+		std::cout << description << "\n";
+		return false;
+	}
+	return true;
 }

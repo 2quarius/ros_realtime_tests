@@ -19,12 +19,12 @@ Publisher::Publisher(const std::string& topic) :
 {
 	Config* config = Config::getConfig();
 	message.payload.clear();
-	for(int i = 0; i < config->payloadLength; i++)
+	for(int i = 0; i < config->payload; i++)
 	{
 		message.payload.push_back(0xFF);
 	}
-	msgAmount = config->amountMessages;
-	timer = nodeHandle->create_wall_timer(1000ms / config->pubFrequency, 
+	msgAmount = config->rep;
+	timer = nodeHandle->create_wall_timer(1000ms / config->freq, 
 		[&](){
 			message.seq = sequenceNumber;
 			message.last_msg = (sequenceNumber == (msgAmount-1));
