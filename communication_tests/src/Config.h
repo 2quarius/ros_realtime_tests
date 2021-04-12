@@ -16,6 +16,8 @@
 class Config {
 public:
 	static Config* getConfig();
+	std::string getFilename();
+	std::string getTitle();
 	int delay;
 	int freq;
 	size_t payload;
@@ -23,6 +25,7 @@ public:
 	std::string prefix;
 	std::string topic;
 	std::string schedule;
+	rclcpp::Node::SharedPtr node;
 private:
 	Config() {};
 	~Config();

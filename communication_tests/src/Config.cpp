@@ -10,6 +10,8 @@
 #include <string>
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <sstream>
+#include <sys/utsname.h>
 
 Config* Config::configInstance = 0;
 
@@ -20,6 +22,50 @@ Config* Config::getConfig()
 		configInstance = new Config();
 	}
 	return configInstance;
+}
+
+std::string Config::getFilename()
+{
+	std::stringstream filename;
+	filename << namePrefix;
+	filename << "ct_gnuplot_l" << amountMessages << "_fq" << pubFrequency;
+	filename << "_pl" << payloadLength;
+	if(rtPrio)
+	{
+		filename << "-tnRT";
+		if(fifoScheduling)
+		{
+			filename << "FIFO";
+		} else {
+			filename << "RR";
+		}
+	}
+	return filename.str();
+}
+
+std::string Config::getTitle()
+{
+	struct utsname unameResponse;
+	int rc = uname(&unameResponse);
+	std::stringstream machineName;
+	if(rc == 0)
+	{
+		machineName << unameResponse.nodename << " " << unameResponse.sysname << " " << unameResponse.release;
+	}
+	std::stringstream ss;
+	ss << "communication_tests plot " << machineName.str() << " -  " << amountMessages << " samples; ";
+	ss << "payload length " << payloadLength;
+	if(rtPrio)
+	{
+		ss << "; test node RT ";
+		if(fifoScheduling)
+		{
+			ss << "FIFO";
+		} else {
+			ss << "RR";
+		}
+	}
+	return ss.str();
 }
 
 namespace po = boost::program_options;

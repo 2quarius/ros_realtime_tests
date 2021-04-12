@@ -17,18 +17,10 @@ int main(int argc, char* argv[])
 	if(!parse_argument(argc, argv, config)) {
 		return 1;
 	}
-	auto n = rclcpp::Node::make_shared("communication_tests_subscriber");
-	auto sub = n->create_subscription<communication_tests::msg::TimeStamp>(config->topic, rclcpp::QoS(1000).best_effort().durability_volatile(),
-		[&](const communication_tests::msg::TimeStamp::SharedPtr msg){
-			RCLCPP_INFO(n->get_logger(), "received %d th msg", msg->seq);
-		});
-	// RCLCPP_INFO(config->nodeHandle->get_logger(), "init subscriber");
-	// Subscriber subscriber(config->topic);
-	// RCLCPP_INFO(config->nodeHandle->get_logger(), "start spin");
-	rclcpp::spin(n);
-	// RCLCPP_INFO(config->nodeHandle->get_logger(), "start measure");
-	// subscriber.startMeasurement();
-	// subscriber.printMeasurementResults();
-	// subscriber.saveGnuplotData();
+	config->node = rclcpp::Node::make_shared("communication_tests_subscriber");
+	Subscriber subscriber(config->topic);
+	subscriber.startMeasurement();
+	subscriber.printMeasurementResults();
+	subscriber.saveGnuplotData();
 	return 0;
 }

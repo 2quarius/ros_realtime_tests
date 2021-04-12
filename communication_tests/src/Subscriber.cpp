@@ -16,36 +16,29 @@ using std::placeholders::_1;
 
 Subscriber::Subscriber(const std::string& topic) :
 	config(Config::getConfig()),
-	lastSeq(messageMissing), outOfOrderCounter(0), amountMessages(config->amountMessages),
-	measurementData(new MeasurementDataEvaluator(config->amountMessages))
+	lastSeq(messageMissing), outOfOrderCounter(0), amountMessages(config->rep),
+	measurementData(new MeasurementDataEvaluator(config->rep))
 {
-	RCLCPP_INFO(config->nodeHandle->get_logger(), "create subscription");
-	rosSubscriber = config->nodeHandle->create_subscription<communication_tests::msg::TimeStamp>(topic, 1000, std::bind(&Subscriber::messageCallback, this, _1));
-        lastSeq = messageMissing;
-        for(int i = 0; i < amountMessages; i++)
-        {
-                measurementData->getData()[i] = messageMissing;
-        }
-        outOfOrderCounter = 0;
+	RCLCPP_INFO(config->node->get_logger(), "create subscription");
+	rosSubscriber = config->node->create_subscription<communication_tests::msg::TimeStamp>(topic, rclcpp::QoS(1000).best_effort().durability_volatile(), std::bind(&Subscriber::messageCallback, this, _1));
 }
 
 void Subscriber::startMeasurement()
 {
-	/*lastSeq = messageMissing;
+	lastSeq = messageMissing;
 	for(int i = 0; i < amountMessages; i++)
 	{
 		measurementData->getData()[i] = messageMissing;
 	}
 	outOfOrderCounter = 0;
-	rclcpp::spin(config->nodeHandle);
-	*/
+	rclcpp::spin(config->node);
 	measurementData->analyzeData();
 }
 
 std::string Subscriber::getMeasurementSummary()
 {
 	std::stringstream ss;
-	ss << "Amount messages: " << config->amountMessages << "; Messages out of order: " << getAmountMessagesOutOfOrder() << std::endl;
+	ss << "Amount messages: " << config->rep << "; Messages out of order: " << getAmountMessagesOutOfOrder() << std::endl;
 	ss << "MIN: " << measurementData->getMinValue() << "us\tAVG: " << measurementData->getAvgValue() << "us\tMAX: " << measurementData->getMaxValue() << "us" << std::endl;
 	ss << measurementData->getBoundaryValueSummary();
 	if(measurementData->getMinValue() == messageMissing)
@@ -53,7 +46,7 @@ std::string Subscriber::getMeasurementSummary()
 		int messagesMissing = 0;
 		std::stringstream ssMissing;
 		ssMissing << "Missing messages: |";
-		for(int i = 0; i < config->amountMessages; i++)
+		for(int i = 0; i < config->rep; i++)
 		{
 			if(measurementData->getData()[i] == messageMissing)
 			{
@@ -122,7 +115,7 @@ int Subscriber::getAmountMessagesOutOfOrder()
 
 void Subscriber::messageCallback(const communication_tests::msg::TimeStamp::SharedPtr msg)
 {
-	RCLCPP_INFO(config->nodeHandle->get_logger(), "received %d th msg", msg->seq);
+	RCLCPP_INFO(config->node->get_logger(), "received %d th msg", msg->seq);
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	measurementData->getData()[msg->seq] = ((ts.tv_sec - msg->sec) * 1000000000 + (ts.tv_nsec - msg->nsec))/NANO_TO_MICRO_DIVISOR;
