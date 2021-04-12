@@ -20,7 +20,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(rt_tests_support REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS program_options REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
 	msg/TimeStamp.msg

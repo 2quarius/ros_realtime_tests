@@ -22,6 +22,7 @@ public:
 	int rep;
 	std::string prefix;
 	std::string topic;
+	std::string schedule;
 private:
 	Config() {};
 	~Config();
@@ -29,6 +30,6 @@ private:
 	static Config* configInstance;
 };
 
-bool parse_argument(int argc, char** argv, Config* config)
+bool parse_argument(int argc, char** argv, Config* config);
 
 #endif //CONFIG_H_
