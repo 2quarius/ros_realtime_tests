@@ -36,7 +36,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'st',
-            default_value='communication_test',
+            default_value='communication_tests',
             description='Topic the subscriber subscribe from bypass node'
         ),
         Node(

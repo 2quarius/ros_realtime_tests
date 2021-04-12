@@ -15,7 +15,7 @@ using namespace std::chrono_literals;
 
 Publisher::Publisher(const std::string& topic) :
 	nodeHandle(Config::getConfig()->nodeHandle),
-	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::TimeStamp>(topic, 1000))
+	rosPublisher(nodeHandle->create_publisher<communication_tests::msg::TimeStamp>(topic, rclcpp::QoS(1000).best_effort().durability_volatile()))
 {
 	Config* config = Config::getConfig();
 	message.payload.clear();
@@ -34,7 +34,7 @@ Publisher::Publisher(const std::string& topic) :
 			message.nsec = ts.tv_nsec;
 			rosPublisher->publish(message);			
 			sequenceNumber++;
-			//RCLCPP_INFO(nodeHandle->get_logger(), "seq : %d, total : %d", sequenceNumber, msgAmount);
+			RCLCPP_INFO(nodeHandle->get_logger(), "seq : %d, total : %d", sequenceNumber, msgAmount);
 			if(sequenceNumber == msgAmount) {
 				timer->cancel();
 				rclcpp::shutdown();

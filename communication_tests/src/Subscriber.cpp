@@ -17,20 +17,28 @@ using std::placeholders::_1;
 Subscriber::Subscriber(const std::string& topic) :
 	config(Config::getConfig()),
 	lastSeq(messageMissing), outOfOrderCounter(0), amountMessages(config->amountMessages),
-	rosSubscriber(config->nodeHandle->create_subscription<communication_tests::msg::TimeStamp>(topic, 1000, std::bind(&Subscriber::messageCallback, this, _1))),
 	measurementData(new MeasurementDataEvaluator(config->amountMessages))
 {
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "create subscription");
+	rosSubscriber = config->nodeHandle->create_subscription<communication_tests::msg::TimeStamp>(topic, 1000, std::bind(&Subscriber::messageCallback, this, _1));
+        lastSeq = messageMissing;
+        for(int i = 0; i < amountMessages; i++)
+        {
+                measurementData->getData()[i] = messageMissing;
+        }
+        outOfOrderCounter = 0;
 }
 
 void Subscriber::startMeasurement()
 {
-	lastSeq = messageMissing;
+	/*lastSeq = messageMissing;
 	for(int i = 0; i < amountMessages; i++)
 	{
 		measurementData->getData()[i] = messageMissing;
 	}
 	outOfOrderCounter = 0;
 	rclcpp::spin(config->nodeHandle);
+	*/
 	measurementData->analyzeData();
 }
 
@@ -114,6 +122,7 @@ int Subscriber::getAmountMessagesOutOfOrder()
 
 void Subscriber::messageCallback(const communication_tests::msg::TimeStamp::SharedPtr msg)
 {
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "received %d th msg", msg->seq);
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	measurementData->getData()[msg->seq] = ((ts.tv_sec - msg->sec) * 1000000000 + (ts.tv_nsec - msg->nsec))/NANO_TO_MICRO_DIVISOR;

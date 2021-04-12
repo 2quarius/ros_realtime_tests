@@ -31,9 +31,10 @@ private:
 	int outOfOrderCounter;
 	const int amountMessages;
 	const static int messageMissing = -1;
-	rclcpp::Subscription<communication_tests::msg::TimeStamp>::SharedPtr rosSubscriber;
 	MeasurementDataEvaluator* measurementData;
 	std::string getMeasurementSummary();
+public:
+        rclcpp::Subscription<communication_tests::msg::TimeStamp>::SharedPtr rosSubscriber;
 	void messageCallback(const communication_tests::msg::TimeStamp::SharedPtr msg);
 };
 

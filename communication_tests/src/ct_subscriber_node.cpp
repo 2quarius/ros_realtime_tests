@@ -32,9 +32,13 @@ int main(int argc, char* argv[])
 	}
 	rclcpp::init(argc, argv);
 	config->nodeHandle = rclcpp::Node::make_shared("communication_tests_subscriber");
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "init subscriber");
 	Subscriber subscriber(config->topic);
-	subscriber.startMeasurement();
-	subscriber.printMeasurementResults();
-	subscriber.saveGnuplotData();
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "start spin");
+	rclcpp::spin(config->nodeHandle);
+	RCLCPP_INFO(config->nodeHandle->get_logger(), "start measure");
+        subscriber.startMeasurement();
+        subscriber.printMeasurementResults();
+        subscriber.saveGnuplotData();
 	return 0;
 }
